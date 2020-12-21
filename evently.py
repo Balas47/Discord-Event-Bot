@@ -1,5 +1,6 @@
 import discord
 from discord.ext import commands
+from random import randint
 
 # Setting the command prefix for the bot
 client = commands.Bot(command_prefix = '!')
@@ -36,5 +37,19 @@ async def on_member_join(member):
 @client.event
 async def on_member_remove(member):
     print(member.name, "has left the server")
+
+
+@client.command()
+async def egg(ctx):
+
+    # Chance for egg
+    chick = randint(0, 100)
+    
+    # 20% chance for a chick
+    if chick < 20:
+        await ctx.send("You got a chick! Take care of it :)")
+
+    else:
+        await ctx.send("No chick this time :(")
 
 client.run('insert token here')
