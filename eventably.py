@@ -4,8 +4,10 @@ from random import randint
 
 DATE = 3
 TIME = 2
+CONFIRM = ["y", "yes", "yep"]
 
 # Check to make sure the date is in the proper format
+# More checking to be done soon
 def date_check(date):
     date = date.split("/")
     
@@ -19,6 +21,7 @@ def date_check(date):
     return False
 
 # Check to make sure the time is in the proper format
+# More checking to be done soon
 def time_check(time):
     time = time.split(":")
 
@@ -131,5 +134,21 @@ async def event(ctx):
         await ctx.send("We were so close :(")
         return
 
+    # CONFIRM WITH THE USER
+    # This particular format will be changed later
+    await ctx.send("The Date: {}\nThe Time: {} \n".format(date.content, the_time.content))
+    await ctx.send("Is this correct? (y/n)")
 
-client.run('NzkwNjc1Njk0MDM5NDY2MDY0.X-EEHw.24p9CGyn5oWVw3gZdZqRrooWDvg')
+    try:
+        confirm = await client.wait_for('message', check=this_check, timeout=15)
+    except:
+        await ctx.send("I will take that as a no :(")
+        return
+
+    if confirm.content.lower() in CONFIRM:
+        await ctx.send("Great! We are all set!")
+    else:
+        await ctx.sent("I will take that as a no, try again maybe?")
+
+
+client.run('insert token here')
