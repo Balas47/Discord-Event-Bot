@@ -21,9 +21,9 @@ class EventInfo:
         # Gets more specific details for the event
         details = date.split("/")
         if len(details) == ALL_INFO:
-            self.month = details[0]
-            self.day = details[1]
-            self.year = details[2]
+            self.month = int(details[0])
+            self.day = int(details[1])
+            self.year = int(details[2])
 
         else:
             # If a proper date isn't given, assume a week from now
@@ -35,21 +35,47 @@ class EventInfo:
                 self.day -= MONTH_LIMITS[self.month - 1]
                 self.month += 1
             self.year = self.timestamp.tm_year
-            print("Appropriate Information Not Given For Date: A week from now will"
-            "be considered the date")
+
+            self.date = "/".join([str(self.month), str(self.day), str(self.year)])
+
+            print("Appropriate Information Not Given For Date: The date is "
+            "assumed to be a week from now")
 
         details = etime.split(":")
         if len(details) == ALL_INFO:
-            self.hour = details[0]
-            self.minute = details[1]
-            self.seconds = details[2]
+            self.hour = int(details[0])
+            self.minute = int(details[1])
 
         else:
             # If a proper time isn't given, assume the same time
             self.hour = self.timestamp.tm_hour
             self.minute = self.timestamp.tm_min
-            self.seconds = self.timestamp.tm_sec
-            print("Appropriate Information Not Given For Date")
+            self.time = ":".join([str(self.timestamp.tm_hour), str(self.timestamp.tm_min)])
+            self.time += ":00"
+            print("Appropriate Information Not Given For Date: The time is "
+            "assumed to be the current time.")
+
+    def compare_event(self, other_event):
+        """
+        This funciton compares two events.
+        :param other_event: The event to be compared to
+        :return: True if the current event is sooner, false if the current event is later.
+        """
+
+        # Compare the year/month/day/hour/minute/second
+        if self.year > other_event.year:
+            return True
+        elif self.month > other_event.month:
+            return True
+        elif self.day > other_event.day:
+            return True
+        elif self.hour > other_event.hour:
+            return True
+        elif self.minute > other_event.minute:
+            return True
+
+        else:
+            return False
 
 if __name__ == "__main__":
 
@@ -71,4 +97,8 @@ if __name__ == "__main__":
     description = input("Give me some sort of description: ")
 
     event = EventInfo(the_date, the_time, description)
+    other = EventInfo("", "", "THIS SHOULD BE TRUE")
     print(event.description)
+    print(other.description)
+    print(other.compare_event(event))
+    print(other.time)
