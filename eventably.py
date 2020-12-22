@@ -1,42 +1,19 @@
 import discord
 from discord.ext import commands
 from random import randint
+import helper_functions
 
 DATE = 3
 TIME = 2
 CONFIRM = ["y", "yes", "yep"]
 
-# Check to make sure the date is in the proper format
-# More checking to be done soon
-def date_check(date):
-    date = date.split("/")
-    
-    # Check if there are 3 "numbers" given
-    if len(date) != DATE:
-        return False
-
-    elif date[0].isdigit() and date[1].isdigit and date[2].isdigit:
-        return True
-        
-    return False
-
-# Check to make sure the time is in the proper format
-# More checking to be done soon
-def time_check(time):
-    time = time.split(":")
-
-    # Check if there are 2 "numbers" given
-    if len(time) != TIME:
-        return False
-
-    elif time[0].isdigit() and time[1].isdigit:
-        return True
-
-    return False
-
-
 # Setting the command prefix for the bot
 client = commands.Bot(command_prefix = '!')
+
+
+##########################################################################################
+# EVENTS ARE DEFINED IN THIS SECTION
+##########################################################################################
 
 
 # Prepares the first thing the bot does when logged in and ready
@@ -70,6 +47,11 @@ async def on_member_join(member):
 @client.event
 async def on_member_remove(member):
     print(member.name, "has left the server")
+
+
+##########################################################################################
+# EVENTS ARE DEFINED IN THIS SECTION
+##########################################################################################
 
 
 # Determines whether or not an egg results in a chicken

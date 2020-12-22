@@ -1,7 +1,9 @@
 import time
+
 DATE_INFO = 3
 TIME_INFO = 2
 MONTH_LIMITS = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
+
 
 class EventInfo:
 
@@ -77,6 +79,7 @@ class EventInfo:
 
         else:
             return False
+
 
 if __name__ == "__main__":
 
