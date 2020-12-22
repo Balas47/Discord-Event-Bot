@@ -2,6 +2,36 @@ import discord
 from discord.ext import commands
 from random import randint
 
+DATE = 3
+TIME = 2
+
+# Check to make sure the date is in the proper format
+def date_check(date):
+    date = date.split("/")
+    
+    # Check if there are 3 "numbers" given
+    if len(date) != DATE:
+        return False
+
+    elif date[0].isdigit() and date[1].isdigit and date[2].isdigit:
+        return True
+        
+    return False
+
+# Check to make sure the time is in the proper format
+def time_check(time):
+    time = time.split(":")
+
+    # Check if there are 2 "numbers" given
+    if len(time) != TIME:
+        return False
+
+    elif time[0].isdigit() and time[1].isdigit:
+        return True
+
+    return False
+
+
 # Setting the command prefix for the bot
 client = commands.Bot(command_prefix = '!')
 
@@ -39,6 +69,7 @@ async def on_member_remove(member):
     print(member.name, "has left the server")
 
 
+# Determines whether or not an egg results in a chicken
 @client.command()
 async def egg(ctx):
 
@@ -52,4 +83,53 @@ async def egg(ctx):
     else:
         await ctx.send("No chick this time :(")
 
-client.run('insert token here')
+
+# Gets information about the event with a series of messages
+@client.command()
+async def event(ctx):
+
+    # First step, get the date
+    await ctx.send("Please tell me the date for the event in the format 'mm/dd/yyyy'")
+
+    # Check that the author and the channel are the same
+    def this_check(m):
+        return m.author == ctx.author and m.channel == ctx.message.channel
+
+    # Get the response
+    try:
+        date = await client.wait_for('message', check=this_check, timeout=15.0)
+    except:
+        await ctx.send("I guess not")
+        return
+
+    # Check the format
+    if not date_check(date.content):
+        await ctx.send("Thats not the right format, so a week from now it is")
+
+    # Second step, get the time
+    await ctx.send("Please tell me the time for the event in the format 'hh:mm'"
+    "\n24 hour time :)")
+
+    # Get the response
+    try:
+        the_time = await client.wait_for('message', check=this_check, timeout=15.0)
+    except:
+        await ctx.send("I guess not")
+        return
+
+    # Check the format
+    if not time_check(the_time.content):
+        await ctx.send("Thats not the right format, but I will survive...")
+
+    # Final step, get the description
+    await ctx.send("Alright, now just describe the event briefly and we are good to go!")
+
+    # Get the response
+    try:
+        description = await client.wait_for('message', check=this_check, timeout=30)
+    except:
+        await ctx.send("We were so close :(")
+        return
+
+
+client.run('NzkwNjc1Njk0MDM5NDY2MDY0.X-EEHw.24p9CGyn5oWVw3gZdZqRrooWDvg')

@@ -1,5 +1,6 @@
 import time
-ALL_INFO = 3
+DATE_INFO = 3
+TIME_INFO = 2
 MONTH_LIMITS = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
 
 class EventInfo:
@@ -20,7 +21,7 @@ class EventInfo:
 
         # Gets more specific details for the event
         details = date.split("/")
-        if len(details) == ALL_INFO:
+        if len(details) == DATE_INFO:
             self.month = int(details[0])
             self.day = int(details[1])
             self.year = int(details[2])
@@ -42,7 +43,7 @@ class EventInfo:
             "assumed to be a week from now")
 
         details = etime.split(":")
-        if len(details) == ALL_INFO:
+        if len(details) == TIME_INFO:
             self.hour = int(details[0])
             self.minute = int(details[1])
 
@@ -96,6 +97,7 @@ if __name__ == "__main__":
 
     description = input("Give me some sort of description: ")
 
+    # Testing the contructor/defaults
     event = EventInfo(the_date, the_time, description)
     other = EventInfo("", "", "THIS SHOULD BE TRUE")
     print(event.description)
