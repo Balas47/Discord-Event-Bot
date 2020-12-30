@@ -1,16 +1,16 @@
 import time
 from date_order import EventInfo
 
+# Maximum number of recent events to hold in memory
+MAX_RECENT = 100
+
+# Indicies for reading in a file
+DATE = 0
+TIME = 1
+SERVER = 2
+DESC = 3
+
 class EventControl:
-
-    # Maximum number of recent events to hold in memory
-    MAX_RECENT = 100
-
-    # Indicies for reading in a file
-    DATE = 0
-    TIME = 1
-    SERVER = 2
-    DESC = 3
 
     def __init__(self):
         """
@@ -71,14 +71,11 @@ class EventControl:
             # If the file already exists, I want to load it in
             try:
                 with open(file_name, "r") as group_file:
-                    print("Exists:")
                     full_list = group_file.readlines()
 
                     for event in full_list:
                         event = event.split(", ")
-                        print(event)
-                        self.add_event(event[DATE], event[TIME], event[SERVER], event[DESC:])
-                        print("Old event added")
+                        self.add_event(event[DATE], event[TIME], str(event[DESC:]), event[SERVER])
 
             # Otherwise I want to create that file and add in the events being stored
             except:
