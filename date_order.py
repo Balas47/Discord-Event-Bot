@@ -68,7 +68,7 @@ class EventInfo:
         :return: True if the current event is sooner, false if the current event is later.
         """
 
-        # Compare the year/month/day/hour/minute/second
+        # Compare the year/month/day/hour/minute
         if self.year > other_event.year:
             return True
         elif self.month > other_event.month:
