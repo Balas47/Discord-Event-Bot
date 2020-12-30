@@ -6,6 +6,12 @@ class EventControl:
     # Maximum number of recent events to hold in memory
     MAX_RECENT = 100
 
+    # Indicies for reading in a file
+    DATE = 0
+    TIME = 1
+    SERVER = 2
+    DESC = 3
+
     def __init__(self):
         """
         This class will keep track of all events, storing them in different files and
@@ -65,25 +71,42 @@ class EventControl:
             # If the file already exists, I want to load it in
             try:
                 with open(file_name, "r") as group_file:
-                    group_file.read()
+                    print("Exists:")
+                    full_list = group_file.readlines()
+
+                    for event in full_list:
+                        event = event.split(", ")
+                        print(event)
+                        self.add_event(event[DATE], event[TIME], event[SERVER], event[DESC:])
+                        print("Old event added")
 
             # Otherwise I want to create that file and add in the events being stored
             except:
                 print("Creating file:", file_name)
                 
-                # Go through and get the events that belong to the current server
-                server_events = []
-                for i in self.closest:
-                    if i.group == groups:
-                        server_events.append(i)
+            # Go through and get the events that belong to the current server
+            server_events = []
+            for i in self.closest:
+                if i.group == groups:
+                    server_events.append(i)
                 
-                # Add events to their appropriate server file
-                with open(file_name, "w") as group_file:
-                    for i in server_events:
-                        group_file.write(i.date + ", ")
-                        group_file.write(i.time + ", ")
-                        group_file.write(groups + ", ")
-                        group_file.write(i.description + "\n")
+            # Add events to their appropriate server file
+            with open(file_name, "w") as group_file:
+                
+                for i in range(len(server_events)):
+                    self.closest.remove(server_events[i])
+
+                    group_file.write(server_events[i].date + ", ")
+                    group_file.write(server_events[i].time + ", ")
+                    group_file.write(groups + ", ")
+                    group_file.write(server_events[i].description + "\n")
+
+                    # Keep track of the range of dates in the file
+                    if i == 0:
+                        self.file_limits[groups] = [server_events[i]]
+
+                    elif i == len(server_events) - 1:
+                        self.file_limits[groups].append(server_events[i])
 
 
 if __name__ == "__main__":
@@ -96,7 +119,7 @@ if __name__ == "__main__":
     # Events will be added in order, but at random intervals
     # This test is expected to take a while... sleep is evil
     from random import randint, choice
-    for i in range(100):
+    for i in range(5):
 
         # Sleep for a random number of seconds, and choose a random server
         time.sleep(randint(2, 10))
@@ -113,3 +136,5 @@ if __name__ == "__main__":
 
     # Test to see if the events are saved to the appropriate server files
     my_events.save_events()
+    print(my_events.closest)
+    print(my_events.file_limits)
