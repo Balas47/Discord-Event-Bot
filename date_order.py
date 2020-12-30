@@ -7,7 +7,7 @@ MONTH_LIMITS = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
 
 class EventInfo:
 
-    def __init__(self, date, etime, description):
+    def __init__(self, date, etime, description, group=""):
         """
         This class will keep track of the information necessary for an event. This
         information being the date and time for the event, and the description of
@@ -15,10 +15,12 @@ class EventInfo:
         :param date: The date for the event.
         :param time: The time the event starts.
         :param description: A description of what the event is.
+        :param group: The group that the event belongs to.
         """
         self.date = date
         self.time = etime
         self.description = description
+        self.group = group
         self.timestamp = time.gmtime()
 
         # Gets more specific details for the event
@@ -41,7 +43,7 @@ class EventInfo:
 
             self.date = "/".join([str(self.month), str(self.day), str(self.year)])
 
-            print("Appropriate Information Not Given For Date: The date is "
+            print("Appropriate information not given for date: The date is "
             "assumed to be a week from now")
 
         details = etime.split(":")
@@ -53,9 +55,10 @@ class EventInfo:
             # If a proper time isn't given, assume the same time
             self.hour = self.timestamp.tm_hour
             self.minute = self.timestamp.tm_min
+
             self.time = ":".join([str(self.timestamp.tm_hour), str(self.timestamp.tm_min)])
-            self.time += ":00"
-            print("Appropriate Information Not Given For Date: The time is "
+            
+            print("Appropriate information not given for date: The time is "
             "assumed to be the current time.")
 
     def compare_event(self, other_event):

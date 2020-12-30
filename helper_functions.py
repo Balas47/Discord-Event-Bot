@@ -1,4 +1,5 @@
-
+DATE = 3
+TIME = 2
 
 # Check to make sure the date is in the proper format
 # More checking to be done soon

@@ -3,8 +3,6 @@ from discord.ext import commands
 from random import randint
 import helper_functions
 
-DATE = 3
-TIME = 2
 CONFIRM = ["y", "yes", "yep"]
 
 # Setting the command prefix for the bot
@@ -72,6 +70,8 @@ async def egg(ctx):
 # Gets information about the event with a series of messages
 @client.command()
 async def event(ctx):
+
+    server = ctx.guild.name  # Get the name of the server
 
     # First step, get the date
     await ctx.send("Please tell me the date for the event in the format 'mm/dd/yyyy'")
