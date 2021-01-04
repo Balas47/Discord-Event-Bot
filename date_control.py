@@ -38,10 +38,18 @@ class EventControl:
         """
 
         new_event = EventInfo(date, etime, des, server)
+
+        # Add the server to our list if it doesn't already exist
+        if server not in self.servers:
+            self.servers.append(server)
         
         # If the list of events is empty, just add it to the list
         if len(self.closest) == 0:
             self.closest.append(new_event)
+
+        # If the event is already in the list, do nothing
+        elif new_event in self.closest:
+            return
 
         # Otherwise, put the event in the placement that it belongs
         else:
@@ -64,7 +72,7 @@ class EventControl:
         """
         
         # I want to save a seperate file for each server
-        for groups in servers:
+        for groups in self.servers:
 
             file_name = groups + ".event"
             
@@ -73,9 +81,11 @@ class EventControl:
                 with open(file_name, "r") as group_file:
                     full_list = group_file.readlines()
 
+                    # Add in the event if it doesn't already exist
                     for event in full_list:
                         event = event.split(", ")
-                        self.add_event(event[DATE], event[TIME], str(event[DESC:]), event[SERVER])
+                        event = [item.strip() for item in event]
+                        self.add_event(event[DATE], event[TIME], "".join(event[DESC:]), event[SERVER])
 
             # Otherwise I want to create that file and add in the events being stored
             except:
@@ -104,6 +114,41 @@ class EventControl:
 
                     elif i == len(server_events) - 1:
                         self.file_limits[groups].append(server_events[i])
+
+    
+    def grab_recent(self):
+        """
+        This function will loop through all of the appropriate files to grab a certain
+        amount of recent events (half of the max) in order to be able to properly keep track
+        of all of them. Assumes that the list of recent events is empty
+        :return: None 
+        """
+
+        # The number of items to be collected from each server, in as much as possible
+        collect = MAX_RECENT / 2
+        collect = collect // len(servers)
+
+        # Each server will have its own file
+        for server in self.servers:
+
+            filename = server + ".event"
+
+            try:
+                # Open the file and get all of the appropriate information
+                with open(filename, "r") as the_file:
+                
+                    # For as many events as we mean to collect
+                    for i in range(int(collect)):
+                    
+                        # Read in the line and check that it exists
+                        event = the_file.readline()
+                        if event:
+                            event = event.split(", ")
+                            event = [item.strip() for item in event]
+                            self.add_event(event[DATE], event[TIME], "".join(event[DESC:]), event[SERVER])
+
+            except IOError:
+                print(filename, "could not be opened!")
 
 
 if __name__ == "__main__":
@@ -135,3 +180,7 @@ if __name__ == "__main__":
     my_events.save_events()
     print(my_events.closest)
     print(my_events.file_limits)
+
+    # Test to see if the appropriate number of events are "grabbed" from the files
+    my_events.grab_recent()
+    print(my_events.closest)
