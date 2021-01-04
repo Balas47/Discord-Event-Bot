@@ -61,6 +61,11 @@ class EventControl:
                 ind += 1
             self.closest.insert(ind, new_event)
 
+        # If the maximmum number of events has been reached, store everything, and grab a few
+        if len(self.closest) >= MAX_RECENT:
+            self.save_events()
+            self.grab_recent()
+
 
     def save_events(self):
         """
@@ -68,6 +73,7 @@ class EventControl:
         file format:
         mm/dd/yy, hh:mm, server_name, description
         ...
+        The list of events currently being held will be cleared
         :return: None
         """
         
@@ -88,7 +94,7 @@ class EventControl:
                         self.add_event(event[DATE], event[TIME], "".join(event[DESC:]), event[SERVER])
 
             # Otherwise I want to create that file and add in the events being stored
-            except:
+            except IOError:
                 print("Creating file:", file_name)
                 
             # Go through and get the events that belong to the current server
@@ -183,4 +189,4 @@ if __name__ == "__main__":
 
     # Test to see if the appropriate number of events are "grabbed" from the files
     my_events.grab_recent()
-    print(my_events.closest)
+    print(*my_events.closest, sep="\n")

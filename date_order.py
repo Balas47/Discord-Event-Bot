@@ -83,6 +83,17 @@ class EventInfo:
         else:
             return False
 
+    def __repr__(self):
+        """
+        Sets up an appropriate string representation of an event
+        :return: A string to represent the EventInfo class.
+        """
+
+        my_string = "Date: " + self.date
+        my_string += "\nTime: " + self.time
+        my_string += "\nDescription: " + self.description
+        return my_string
+
 
 if __name__ == "__main__":
 

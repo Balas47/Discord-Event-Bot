@@ -1,12 +1,14 @@
 import discord
 from discord.ext import commands
 from random import randint
-import helper_functions
+from helper_functions import date_check, time_check
+from date_control import EventControl
 
 CONFIRM = ["y", "yes", "yep"]
 
 # Setting the command prefix for the bot
 client = commands.Bot(command_prefix = '!')
+control_events = EventControl()
 
 
 ##########################################################################################
@@ -129,8 +131,15 @@ async def event(ctx):
 
     if confirm.content.lower() in CONFIRM:
         await ctx.send("Great! We are all set!")
+
+        # Add in the event
+        control_events.add_event(date.content, the_time.content, description.content, date.guild.name)
+
+        # For testing purposes, print out the event
+        print(*control_events.closest, sep="\n")
+        print("List of servers:", control_events.servers, "\n")
     else:
         await ctx.sent("I will take that as a no, try again maybe?")
 
 
-client.run('insert token here')
+client.run('NzkwNjc1Njk0MDM5NDY2MDY0.X-EEHw.HIIhU1yM7zreeMfEHuloZT7LcgE')
