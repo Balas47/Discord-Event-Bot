@@ -119,8 +119,8 @@ async def event(ctx):
         return
 
     # CONFIRM WITH THE USER
-    # This particular format will be changed later
-    await ctx.send("The Date: {}\nThe Time: {} \n".format(date.content, the_time.content))
+    # This format might be changed later
+    await ctx.send("The Date: {}\nThe Time: {} \nThe Description: {}".format(date.content, the_time.content, description.content))
     await ctx.send("Is this correct? (y/n)")
 
     try:
@@ -138,8 +138,9 @@ async def event(ctx):
         # For testing purposes, print out the event
         print(*control_events.closest, sep="\n")
         print("List of servers:", control_events.servers, "\n")
+
     else:
-        await ctx.sent("I will take that as a no, try again maybe?")
+        await ctx.sent("Thats too bad, try again maybe?")
 
 
-client.run('NzkwNjc1Njk0MDM5NDY2MDY0.X-EEHw.HIIhU1yM7zreeMfEHuloZT7LcgE')
+client.run('insert token here')
