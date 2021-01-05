@@ -39,6 +39,21 @@ class EventControl:
 
         new_event = EventInfo(date, etime, des, server)
 
+        # Get the current time to make sure that we are not adding an already passed event
+        the_time = time.gmtime()
+
+        the_date = "{month}/{day}/{year}".format(month = the_time.tm_mon, day = the_time.tm_mday,
+                                        year = the_time.tm_year)
+        the_time = "{hour}:{min}".format(hour = the_time.tm_hour, min = the_time.tm_min)
+
+        curr_time = EventInfo(the_date, the_time, "")
+
+        # Past events should not be added
+        if curr_time.compare_event(new_event):
+            print("Past events cannot be added!")
+            return
+
+
         # Add the server to our list if it doesn't already exist
         if server not in self.servers:
             self.servers.append(server)
@@ -80,7 +95,7 @@ class EventControl:
         # I want to save a seperate file for each server
         for groups in self.servers:
 
-            file_name = groups + ".event"
+            file_name = "_".join(groups.split()) + ".event"
             
             # If the file already exists, I want to load it in
             try:
@@ -132,12 +147,12 @@ class EventControl:
 
         # The number of items to be collected from each server, in as much as possible
         collect = MAX_RECENT / 2
-        collect = collect // len(servers)
+        collect = collect // len(self.servers)
 
         # Each server will have its own file
         for server in self.servers:
 
-            filename = server + ".event"
+            filename = "_".join(server.split()) + ".event"
 
             try:
                 # Open the file and get all of the appropriate information
@@ -163,6 +178,9 @@ if __name__ == "__main__":
     # Setting up a test controller, and random server names
     my_events = EventControl()
     servers = ["serv1", "serv2", "serv3", "serv4", "serv5"]
+
+    # Make sure that past events cannot be added to the events list
+    my_events.add_event("1/5/2021", "10:24", "stuff and things")
     
     # Events will be added in order, but at random intervals
     # This test is expected to take a while... sleep is evil

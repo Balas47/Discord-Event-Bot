@@ -1,8 +1,9 @@
 import discord
-from discord.ext import commands
+from discord.ext import commands, tasks
 from random import randint
-from helper_functions import date_check, time_check
-from date_control import EventControl
+from helper_functions import date_check, time_check, find_channel
+from date_control import EventControl, EventInfo
+import time
 
 CONFIRM = ["y", "yes", "yep"]
 
@@ -21,12 +22,15 @@ control_events = EventControl()
 async def on_ready():
     print("I'm ready, I'm ready, I'm READY!")
 
+    # Start the background tasks
+    get_events.start()
+
 
 # Do things when a message is deleted
 @client.event
 async def on_message_delete(message):
 
-    # Don't do anything for the bots own messages
+    # Don't do anything for the bots own message
     if message.author == client.user:
         return
     
@@ -50,7 +54,7 @@ async def on_member_remove(member):
 
 
 ##########################################################################################
-# EVENTS ARE DEFINED IN THIS SECTION
+# COMMANDS ARE DEFINED IN THIS SECTION
 ##########################################################################################
 
 
@@ -141,6 +145,51 @@ async def event(ctx):
 
     else:
         await ctx.sent("Thats too bad, try again maybe?")
+
+
+##########################################################################################
+# COMMANDS ARE DEFINED IN THIS SECTION
+##########################################################################################
+
+
+# This task will occasionally check the most recent event(s) to alert the appropriate server
+@tasks.loop(minutes = 1.0)
+async def get_events():
+
+    # Create a temporary event to compare to
+    the_time = time.gmtime()
+
+    the_date = "{month}/{day}/{year}".format(month = the_time.tm_mon, day = the_time.tm_mday,
+                                        year = the_time.tm_year)
+    the_time = "{hour}:{min}".format(hour = the_time.tm_hour, min = the_time.tm_min)
+
+    curr_time = EventInfo(the_date, the_time, "")
+
+    # Store events to be removed later
+    to_remove = []
+
+    # Loop through the most recents events to check if the task time has come
+    for event in control_events.closest:
+
+        # The event and the current time should be equal
+        if curr_time.equal_events(event):
+
+            alert = find_channel(client.guilds, event.group)
+            
+            # Try to send a reminder to the announcements channel
+            await alert.send("REMINDER FOR THE FOLLOWING EVENT!")
+            await alert.send(event.description)
+
+            to_remove.append(event)
+
+    # Remove all events that have now been used up
+    for item in to_remove:
+        control_events.closest.remove(item)
+
+    # Grab events if the closest list is now empty
+    if len(control_events.closest) == 0:
+        control_events.grab_recent()
+
 
 
 client.run('insert token here')

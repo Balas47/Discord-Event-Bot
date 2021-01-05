@@ -65,7 +65,7 @@ class EventInfo:
         """
         This funciton compares two events.
         :param other_event: The event to be compared to
-        :return: True if the current event is sooner, false if the current event is later.
+        :return: True if the current event is later, false if the current event is sooner.
         """
 
         # Compare the year/month/day/hour/minute
@@ -82,6 +82,24 @@ class EventInfo:
 
         else:
             return False
+
+    def equal_events(self, other_event):
+        """
+        This function conpares two events for equality.
+        :param other_event: The event to be compared to.
+        :return: True if the events are equal, false otherwise.
+        """
+        
+        # Booleans to make comparison line shorter
+        year = self.year == other_event.year
+        month = self.month == other_event.month
+        day = self.day == other_event.day
+
+        hour = self.hour == other_event.hour
+        minute = self.minute == other_event.minute
+
+        return year and month and day and hour and minute
+
 
     def __repr__(self):
         """
