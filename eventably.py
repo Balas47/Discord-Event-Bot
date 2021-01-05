@@ -73,6 +73,14 @@ async def egg(ctx):
         await ctx.send("No chick this time :(")
 
 
+# Sends a link to the code for the bot (github link)
+@client.command()
+async def help(ctx):
+
+    await ctx.send("If you would like, you can check out my documentation here :)")
+    await ctx.send("https://github.com/Balas47/Discord-Event-Bot")
+
+
 # Gets information about the event with a series of messages
 @client.command()
 async def event(ctx):
@@ -148,7 +156,7 @@ async def event(ctx):
 
 
 ##########################################################################################
-# COMMANDS ARE DEFINED IN THIS SECTION
+# BACKGROUND TASKS ARE DEFINED IN THIS SECTION
 ##########################################################################################
 
 
@@ -189,7 +197,6 @@ async def get_events():
     # Grab events if the closest list is now empty
     if len(control_events.closest) == 0:
         control_events.grab_recent()
-
 
 
 client.run('insert token here')
